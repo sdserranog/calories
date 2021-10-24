@@ -5,21 +5,32 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
+    "test": "yarn run jest -env=jsdom",
     "lint": "eslint --ext .js,.jsx --ignore-path .gitignore src",
     "format": "prettier .  --write"
   },
   "dependencies": {
+    "@babel/preset-react": "^7.14.5",
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
     "@mui/material": "^5.0.4",
     "@supabase/supabase-js": "^1.25.1",
     "@supabase/ui": "^0.35.0",
+    "eslint-plugin-jest-dom": "^3.9.2",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-router-dom": "^5.3.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.15.8",
+    "@testing-library/dom": "^8.10.1",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
     "@vitejs/plugin-react": "^1.0.0",
+    "babel-eslint": "^10.1.0",
+    "babel-jest": "^27.3.1",
+    "babel-preset-react-app": "^10.0.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-standard": "^16.0.3",
@@ -28,7 +39,66 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-promise": "^5.1.1",
     "eslint-plugin-react": "^7.26.1",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^27.3.1",
+    "jest-circus": "^27.3.1",
+    "jest-scss-transform": "^1.0.1",
+    "jest-watch-typeahead": "^1.0.0",
     "prettier": "^2.4.1",
     "vite": "^2.6.4"
+  },
+  "jest": {
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest/jest.setup.js"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!src/**/*.d.ts"
+    ],
+    "testMatch": [
+      "<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}",
+      "<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}"
+    ],
+    "testEnvironment": "jsdom",
+    "transform": {
+      "^.+\\.(js|jsx|mjs|cjs|ts|tsx)$": "<rootDir>/node_modules/babel-jest",
+      "^.+\\.scss$": "jest-scss-transform",
+      "^.+\\.css$": "<rootDir>/jest/mocks/cssMock.js"
+    },
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx)$",
+      "^.+\\.module\\.(css|sass|scss)$"
+    ],
+    "moduleNameMapper": {
+      "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy",
+      "^@config(.*)$": "<rootDir>/src/config/$1",
+      "^@pages(.*)$": "<rootDir>/src/pages/$1",
+      "^@components(.*)$": "<rootDir>/src/components/$1",
+      "^@styles(.*)$": "<rootDir>/src/styles/$1",
+      "^@assets(.*)$": "<rootDir>/src/assets/$1"
+    },
+    "watchPlugins": [
+      "jest-watch-typeahead/filename",
+      "jest-watch-typeahead/testname"
+    ],
+    "resetMocks": true
+  },
+  "babel": {
+    "env": {
+      "test": {
+        "presets": [
+          "react-app",
+          [
+            "@babel/preset-react",
+            {
+              "runtime": "automatic"
+            }
+          ]
+        ]
+      }
+    }
   }
 }
