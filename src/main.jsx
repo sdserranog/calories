@@ -1,13 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import '@styles/index.css'
-import App from './App'
 
 import theme from '@config/theme'
 import { ThemeProvider } from '@mui/material/styles'
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
+import Home from '@pages/home'
 import Login from '@pages/login'
 
 ReactDOM.render(
@@ -15,7 +15,7 @@ ReactDOM.render(
     <ThemeProvider theme={theme}>
       <Router history="">
         <Switch>
-          <Route exact path="/" component={App}></Route>
+          <Route exact path="/" component={Home}></Route>
           <Route exact path="/login" component={Login}></Route>
         </Switch>
       </Router>
