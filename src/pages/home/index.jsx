@@ -1,5 +1,6 @@
 import ModalFood from '@components/Food/Modal'
 import Table from '@components/Table'
+import InfoUser from '@components/Food/InfoUser'
 import useFood from '@hooks/useFood'
 import AddIcon from '@mui/icons-material/Add'
 import Button from '@mui/material/Button'
@@ -9,8 +10,16 @@ function Home() {
   const [open, setOpen] = useState(false)
   const [selected, setSelected] = useState()
 
-  const { food, createFood, deleteFood, editFood, setFilterDates, rangeDates } =
-    useFood()
+  const {
+    food,
+    createFood,
+    deleteFood,
+    editFood,
+    setFilterDates,
+    rangeDates,
+    todayCalories,
+    monthlyBudget,
+  } = useFood()
 
   const handleCreate = (data) => {
     createFood(data).then(() => setOpen(false))
@@ -56,6 +65,7 @@ function Home() {
         createFood={handleCreate}
         editFood={handleEdit}
       />
+      <InfoUser todayCalories={todayCalories} monthlyBudget={monthlyBudget} />
     </div>
   )
 }

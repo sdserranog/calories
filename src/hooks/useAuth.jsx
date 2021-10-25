@@ -13,8 +13,8 @@ function useAuth() {
     }, 500)
 
     const { data: listener } = supabase.auth.onAuthStateChange(
-      async (event, user) => {
-        setUser(user)
+      async (event, session) => {
+        setUser(session?.user)
         setLoading(false)
       }
     )
