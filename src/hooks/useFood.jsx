@@ -3,16 +3,37 @@ import supabase from '@config/supabase'
 
 const useFood = () => {
   const [food, setFood] = useState([])
+  const [rangeDates, setRangeDates] = useState({ start: null, end: null })
 
   useEffect(() => {
     getFood()
-  }, [])
+  }, [rangeDates])
+
+  const readFood = async () => {
+    if (rangeDates.start && rangeDates.end) {
+      return getFoodByDate({ start: rangeDates.start, end: rangeDates.end })
+    }
+    return await supabase.from('Food').select('*')
+  }
 
   const getFood = async () => {
-    let { data, error } = await supabase.from('Food').select('*')
+    const { data, error } = await readFood()
     if (error) handleError(error)
     setFood(data)
     return data
+  }
+
+  const getFoodByDate = async ({ start, end }) => {
+    const { data, error } = await supabase
+      .from('Food')
+      .select('*')
+      .gte('created_at', rangeDates.start)
+      .lte('created_at', rangeDates.end)
+    return { data, error }
+  }
+
+  const setFilterDates = async ({ start, end }) => {
+    setRangeDates({ start, end })
   }
 
   const createFood = async ({ name, calories, price, date, user_id }) => {
@@ -37,7 +58,7 @@ const useFood = () => {
 
   const handleError = (error) => console.log(error)
 
-  return { food, createFood, deleteFood, editFood }
+  return { food, createFood, deleteFood, editFood, setFilterDates, rangeDates }
 }
 
 export default useFood

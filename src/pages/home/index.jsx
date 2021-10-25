@@ -9,7 +9,8 @@ function Home() {
   const [open, setOpen] = useState(false)
   const [selected, setSelected] = useState()
 
-  const { food, createFood, deleteFood, editFood } = useFood()
+  const { food, createFood, deleteFood, editFood, setFilterDates, rangeDates } =
+    useFood()
 
   const handleCreate = (data) => {
     createFood(data).then(() => setOpen(false))
@@ -21,6 +22,10 @@ function Home() {
   const handleClose = () => {
     setOpen(false)
     setSelected(null)
+  }
+
+  const handleChangeDates = ({ start, end }) => {
+    setFilterDates({ start, end })
   }
 
   const openModalEdit = (entry) => {
@@ -37,7 +42,13 @@ function Home() {
       >
         Add Food
       </Button>
-      <Table data={food} deleteFood={deleteFood} editFood={openModalEdit} />
+      <Table
+        data={food}
+        deleteFood={deleteFood}
+        editFood={openModalEdit}
+        selectDates={rangeDates}
+        changeDates={handleChangeDates}
+      />
       <ModalFood
         open={open}
         data={selected}

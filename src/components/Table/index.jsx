@@ -18,6 +18,8 @@ import Toolbar from '@mui/material/Toolbar'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import { visuallyHidden } from '@mui/utils'
+
+import ModalDate from './components/ModalDate'
 import * as React from 'react'
 
 function descendingComparator(a, b, orderBy) {
@@ -137,6 +139,7 @@ function EnhancedTableHead(props) {
 }
 
 const EnhancedTableToolbar = (props) => {
+  const [openModalDate, setOpenModalDate] = React.useState(false)
   const { numSelected } = props
 
   return (
@@ -180,17 +183,32 @@ const EnhancedTableToolbar = (props) => {
           </IconButton>
         </Tooltip>
       ) : (
-        <Tooltip title="Filter list">
+        <Tooltip title="Filter list" onClick={() => setOpenModalDate(true)}>
           <IconButton>
             <FilterListIcon />
           </IconButton>
         </Tooltip>
       )}
+      <ModalDate
+        open={openModalDate}
+        handleClose={() => setOpenModalDate(false)}
+        initialDates={props.selectDates}
+        changeDates={(dates) => {
+          props.changeDates(dates)
+          setOpenModalDate(false)
+        }}
+      />
     </Toolbar>
   )
 }
 
-export default function EnhancedTable({ data: rows, deleteFood, editFood }) {
+export default function EnhancedTable({
+  data: rows,
+  deleteFood,
+  editFood,
+  selectDates,
+  changeDates,
+}) {
   const [order, setOrder] = React.useState('asc')
   const [orderBy, setOrderBy] = React.useState('calories')
   const [selected, setSelected] = React.useState([])
@@ -258,6 +276,8 @@ export default function EnhancedTable({ data: rows, deleteFood, editFood }) {
         <EnhancedTableToolbar
           numSelected={selected.length}
           handleDelete={handleDelete}
+          selectDates={selectDates}
+          changeDates={changeDates}
         />
         <TableContainer>
           <Table
