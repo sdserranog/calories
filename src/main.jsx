@@ -6,6 +6,7 @@ import theme from '@config/theme'
 import { ThemeProvider } from '@mui/material/styles'
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import PrivateRoute from '@components/Routes/PrivateRoute'
 
 import Home from '@pages/home'
 import Login from '@pages/login'
@@ -15,8 +16,8 @@ ReactDOM.render(
     <ThemeProvider theme={theme}>
       <Router history="">
         <Switch>
-          <Route exact path="/" component={Home}></Route>
-          <Route exact path="/login" component={Login}></Route>
+          <PrivateRoute exact path="/" component={Home} />
+          <Route exact path="/login" component={Login} />
         </Switch>
       </Router>
     </ThemeProvider>
