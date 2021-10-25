@@ -1,4 +1,5 @@
 import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import Box from '@mui/material/Box'
 import Checkbox from '@mui/material/Checkbox'
@@ -73,6 +74,12 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: 'Created At',
+  },
+  {
+    id: 'edit',
+    numeric: true,
+    disablePadding: false,
+    label: 'Edit',
   },
 ]
 
@@ -167,7 +174,7 @@ const EnhancedTableToolbar = (props) => {
       )}
 
       {numSelected > 0 ? (
-        <Tooltip title="Delete">
+        <Tooltip title="Delete" onClick={props.handleDelete}>
           <IconButton>
             <DeleteIcon />
           </IconButton>
@@ -183,7 +190,7 @@ const EnhancedTableToolbar = (props) => {
   )
 }
 
-export default function EnhancedTable({ data: rows }) {
+export default function EnhancedTable({ data: rows, deleteFood, editFood }) {
   const [order, setOrder] = React.useState('asc')
   const [orderBy, setOrderBy] = React.useState('calories')
   const [selected, setSelected] = React.useState([])
@@ -198,19 +205,19 @@ export default function EnhancedTable({ data: rows }) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name)
+      const newSelecteds = rows.map((n) => n.id)
       setSelected(newSelecteds)
       return
     }
     setSelected([])
   }
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name)
+  const handleClick = (event, id) => {
+    const selectedIndex = selected.indexOf(id)
     let newSelected = []
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name)
+      newSelected = newSelected.concat(selected, id)
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1))
     } else if (selectedIndex === selected.length - 1) {
@@ -234,7 +241,12 @@ export default function EnhancedTable({ data: rows }) {
     setPage(0)
   }
 
-  const isSelected = (name) => selected.indexOf(name) !== -1
+  const handleDelete = () => {
+    deleteFood(selected)
+    setSelected([])
+  }
+
+  const isSelected = (id) => selected.indexOf(id) !== -1
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -243,7 +255,10 @@ export default function EnhancedTable({ data: rows }) {
   return (
     <Box sx={{ width: '100%', mt: 5 }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          handleDelete={handleDelete}
+        />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -264,21 +279,21 @@ export default function EnhancedTable({ data: rows }) {
               {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name)
+                  const isItemSelected = isSelected(row.id)
                   const labelId = `enhanced-table-checkbox-${index}`
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={row.id}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
                         <Checkbox
+                          onClick={(event) => handleClick(event, row.id)}
                           color="primary"
                           checked={isItemSelected}
                           inputProps={{
@@ -298,6 +313,13 @@ export default function EnhancedTable({ data: rows }) {
                       <TableCell align="right">{row.price}</TableCell>
                       <TableCell align="right">
                         {new Date(row.created_at).toLocaleString()}
+                      </TableCell>
+                      <TableCell align="right">
+                        <Tooltip title="Edit" onClick={() => editFood(row)}>
+                          <IconButton>
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
                   )

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -21,13 +21,27 @@ const style = {
   p: 4,
 }
 
-const FoodModal = ({ open, handleClose, onChange }) => {
+const FoodModal = ({ open, data, handleClose, createFood, editFood }) => {
   const { user } = useAuth()
 
-  const [name, setName] = useState('')
+  const [name, setName] = useState()
   const [calories, setCalories] = useState()
   const [price, setPrice] = useState()
-  const [date, setDate] = useState(new Date())
+  const [date, setDate] = useState()
+
+  useEffect(() => {
+    if (data) {
+      setName(data.name)
+      setCalories(data.calories)
+      setPrice(data.price)
+      setDate(data.created_at)
+    } else if (open) {
+      setName()
+      setCalories()
+      setPrice()
+      setDate(new Date())
+    }
+  }, [open, data])
 
   const handleName = (e) => {
     const { value } = e.target
@@ -48,7 +62,11 @@ const FoodModal = ({ open, handleClose, onChange }) => {
   const handleCreate = () => {
     const user_id = user.id
     const data = { name, calories, price, date, user_id }
-    onChange(data)
+    createFood(data)
+  }
+  const handleEdit = () => {
+    const newData = { name, calories, price, created_at: date }
+    editFood(data.id, newData)
   }
 
   return (
@@ -92,9 +110,9 @@ const FoodModal = ({ open, handleClose, onChange }) => {
         <Button
           sx={{ width: '100%', mt: 3 }}
           variant="contained"
-          onClick={handleCreate}
+          onClick={data ? handleEdit : handleCreate}
         >
-          Create
+          {data ? 'Edit' : 'Create'}
         </Button>
       </Box>
     </Modal>
