@@ -1,12 +1,12 @@
+import Alert from '@components/Alert'
+import InfoUser from '@components/Food/InfoUser'
 import ModalFood from '@components/Food/Modal'
 import Table from '@components/Table'
-import InfoUser from '@components/Food/InfoUser'
 import useFood from '@hooks/useFood'
 import AddIcon from '@mui/icons-material/Add'
 import Button from '@mui/material/Button'
-import Alert from '@components/Alert'
-import { useState, useEffect } from 'react'
-import { MAX_CALORIES, MAX_BUDGET } from '@utils/constants'
+import { MAX_BUDGET, MAX_CALORIES } from '@utils/constants'
+import { useEffect, useState } from 'react'
 
 function Home() {
   const [open, setOpen] = useState(false)
@@ -38,7 +38,6 @@ function Home() {
         id: 2,
         message: `Your budget for this month is less than $${MAX_BUDGET}`,
       })
-    console.log(messages)
     setErrors(messages)
   }, [todayCalories, monthlyBudget])
 

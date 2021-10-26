@@ -114,6 +114,31 @@ const useFood = () => {
     return monthlyBudget > MAX_BUDGET
   }
 
+  const getEntriesLastWeek = async () => {
+    let start = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() - 7
+    )
+    let end = today
+
+    start = start.toISOString()
+    end = end.toISOString()
+    const { data, error } = await getFoodByRangeDate({ start, end })
+    if (error) handleError(error)
+    return data
+  }
+
+  const averageCaloriesLastWeek = async () => {
+    const data = await getEntriesLastWeek()
+    return data.reduce((acc, entry) => acc + entry.calories, 0) / data.length
+  }
+
+  const numberOfEntriesLastWeek = async () => {
+    const data = await getEntriesLastWeek()
+    return data.length
+  }
+
   const handleError = (error) => console.log(error)
 
   return {
@@ -127,6 +152,8 @@ const useFood = () => {
     hasExcededBudget,
     todayCalories,
     monthlyBudget,
+    averageCaloriesLastWeek,
+    numberOfEntriesLastWeek,
   }
 }
 
