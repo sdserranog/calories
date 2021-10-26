@@ -10,7 +10,7 @@ const InfoUser = ({ todayCalories, monthlyBudget }) => {
           Additional data
         </Typography>
         <Typography variant="body" sx={{ mb: 2 }} component="div">
-          <strong>Calories: </strong> {todayCalories}
+          <strong>Calories today: </strong> {todayCalories}
         </Typography>
         <Typography variant="body">
           <strong>Month budget: </strong> {monthlyBudget}

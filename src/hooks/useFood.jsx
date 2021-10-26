@@ -13,6 +13,8 @@ const useFood = () => {
     getFood()
   }, [rangeDates])
 
+  const today = new Date()
+
   const readFood = async () => {
     if (rangeDates.start && rangeDates.end) {
       return getFoodByRangeDate({
@@ -66,27 +68,23 @@ const useFood = () => {
   }
 
   const getTodaysFood = async () => {
-    let start = new Date()
-    start.setUTCHours(0, 0, 0, 0)
+    let start = today
+    start.setHours(0, 0, 0, 0)
     start = start.toISOString()
-
-    let end = new Date()
-    end.setUTCHours(23, 59, 59, 999)
+    let end = today
+    end.setHours(23, 59, 59, 999)
     end = end.toISOString()
-    console.log({ start, end })
     const { data, error } = await getFoodByRangeDate({ start, end })
     if (error) handleError(error)
     return data
   }
 
   const getMonthlyFood = async () => {
-    const date = new Date()
-    let start = new Date(date.getFullYear(), date.getMonth(), 1)
-    let end = new Date(date.getFullYear(), date.getMonth() + 1, 0)
+    let start = new Date(today.getFullYear(), today.getMonth(), 1)
+    let end = new Date(today.getFullYear(), today.getMonth() + 1, 0)
 
     start = start.toISOString()
     end = end.toISOString()
-    console.log({ start, end })
     const { data, error } = await getFoodByRangeDate({ start, end })
     if (error) handleError(error)
     return data
@@ -108,14 +106,12 @@ const useFood = () => {
     })
   }
 
-  const canAddCalories = async (calories) => {
-    const { data } = await getTodayFood()
-    console.log(data)
-    return calories < MAX_CALORIES
+  const hasExcededCalories = () => {
+    return todayCalories > MAX_CALORIES
   }
 
-  const canAddPrice = async (budget) => {
-    return budget < MAX_BUDGET
+  const hasExcededBudget = () => {
+    return monthlyBudget > MAX_BUDGET
   }
 
   const handleError = (error) => console.log(error)
@@ -127,8 +123,8 @@ const useFood = () => {
     editFood,
     setFilterDates,
     rangeDates,
-    canAddCalories,
-    canAddPrice,
+    hasExcededCalories,
+    hasExcededBudget,
     todayCalories,
     monthlyBudget,
   }
